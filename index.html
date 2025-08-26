@@ -43,30 +43,23 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        .logo-text {
             font-family: 'Lora', serif;
             font-weight: 700;
             font-size: 1.75rem;
-            color: var(--primary-color);
-        }
-        
-        .admin-link {
-            padding: 0.5rem 1rem;
-            background-color: #F0F2E6;
-            color: var(--primary-color);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        .admin-link:hover {
-            background-color: #E6E8D9;
         }
 
         .hero {
             text-align: center;
             padding: 6rem 1.5rem 5rem;
-            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            background-color: #F0F2E6;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23556B2F" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
         }
 
         .hero h1 {
@@ -150,8 +143,8 @@
             display: grid;
             gap: 1.5rem;
             overflow-y: auto;
-            max-height: 75vh; /* Make list scrollable */
-            padding-right: 8px; /* For scrollbar */
+            max-height: 75vh;
+            padding-right: 8px;
         }
 
         .job-card {
@@ -162,6 +155,7 @@
             box-shadow: var(--shadow);
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .job-card.selected, .job-card:hover {
@@ -223,6 +217,29 @@
             color: var(--subtle-text);
             border: 1px solid var(--border-color);
         }
+        .match-score-tag {
+            background-color: #E6F8F2;
+            color: #047857;
+            font-weight: 600;
+        }
+        .save-job-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease, background-color 0.2s ease;
+        }
+        .job-card:hover .save-job-btn {
+            opacity: 1;
+        }
+        .save-job-btn:hover {
+            background-color: #F3F4F6;
+        }
 
         .detail-pane {
             background: var(--card-background);
@@ -268,6 +285,13 @@
         .detail-body h3 {
             font-family: 'Lora', serif;
         }
+        
+        .decorative-divider {
+            height: 4px;
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="4" viewBox="0 0 100 4" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M0 2 Q 5 0, 10 2 T 20 2 T 30 2 T 40 2 T 50 2 T 60 2 T 70 2 T 80 2 T 90 2 T 100 2" stroke="%23E5E7EB" fill="none" stroke-width="1"/%3E%3C/svg%3E');
+            margin: 24px 0;
+        }
+
         .detail-summary {
             background-color: #F9FAFB;
             padding: 24px;
@@ -339,17 +363,16 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
-            display: flex;
+            display: none; /* Hidden by default */
             align-items: center;
             justify-content: center;
             z-index: 2000;
             opacity: 0;
-            visibility: hidden;
             transition: opacity 0.3s ease;
         }
         .modal-overlay.visible {
+            display: flex;
             opacity: 1;
-            visibility: visible;
         }
         .modal-content {
             background: var(--card-background);
@@ -398,23 +421,30 @@
             font-weight: 600;
         }
 
+        /* Responsive Design */
         @media (max-width: 900px) {
             .main-layout {
                 grid-template-columns: 1fr;
             }
             .detail-pane {
-                display: none; /* Hide detail pane on mobile, use modal instead */
+                display: none;
             }
             #job-listings {
                 max-height: none;
+                padding-right: 0;
             }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="logo">Job Bazar</div>
-        <a href="https://console.firebase.google.com/project/job-bazar-app/firestore/data/~2Fjobs" target="_blank" class="admin-link">Admin Portal</a>
+        <a href="#" class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="var(--primary-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 2L13.55 5.13L15.5 6.27L13.55 7.41L12 10.54L10.45 7.41L8.5 6.27L10.45 5.13L12 2Z" fill="var(--primary-color)" opacity="0.5"/>
+            </svg>
+            <span class="logo-text">Job Bazar</span>
+        </a>
     </header>
 
     <section class="hero">
@@ -440,7 +470,6 @@
                 <h3>Select a job to view details</h3>
                 <p>Your next opportunity is just a click away.</p>
             </div>
-            <!-- Job details will be populated here -->
         </div>
     </main>
 
@@ -452,6 +481,21 @@
             </div>
             <div class="modal-body" id="interview-questions-output">
                 Generating questions...
+            </div>
+            <div class="modal-footer">
+                <button class="close-button">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Job Detail Modal -->
+    <div class="modal-overlay" id="mobile-job-detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="mobile-modal-job-title"></h2>
+            </div>
+            <div class="modal-body" id="mobile-modal-body">
+                <!-- Mobile job details will be populated here -->
             </div>
             <div class="modal-footer">
                 <button class="close-button">Close</button>
@@ -478,8 +522,7 @@
         // --- END OF FIREBASE SETUP ---
 
         // --- START OF GEMINI API SETUP ---
-        // IMPORTANT: You must get a Gemini API key from Google AI Studio and paste it here.
-        const GEMINI_API_KEY = "AIzaSyDc1-R-6XAGEpyQJFOvDKrPVfxHMlHD6ms"; // PASTE YOUR GEMINI API KEY HERE
+        const GEMINI_API_KEY = "AIzaSyDc1-R-6XAGEpyQJFOvDKrPVfxHMlHD6ms";
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
         // --- END OF GEMINI API SETUP ---
 
@@ -489,6 +532,7 @@
         const detailPane = document.getElementById('job-detail-pane');
         const interviewModal = document.getElementById('ai-interview-modal');
         const interviewQuestionsOutput = document.getElementById('interview-questions-output');
+        const mobileJobDetailModal = document.getElementById('mobile-job-detail-modal');
         
         let allJobs = [];
         let currentSelectedJobId = null;
@@ -508,15 +552,15 @@
                 jobCard.dataset.jobId = jobData.id;
 
                 const { 
-                    'Job Title': jobTitle = 'N/A', 
-                    'Company': company = 'N/A', 
-                    'Location': location = 'Remote', 
-                    'applicantCount': applicantCount = Math.floor(Math.random() * 30) + 5,
-                    'datePosted': datePosted = 'Just now'
+                    'Job Title': jobTitle = 'N/A', 'Company': company = 'N/A', 
+                    'Location': location = 'Remote', 'Salary': salary = 'N/A'
                 } = jobData;
                 const companyInitial = company.charAt(0).toUpperCase();
 
                 jobCard.innerHTML = `
+                    <button class="save-job-btn" title="Save Job">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    </button>
                     <div class="card-top">
                         <div class="company-logo">${companyInitial}</div>
                         <div class="card-info">
@@ -526,24 +570,28 @@
                     </div>
                     <div class="card-details">
                         <span class="detail-tag">📍 ${location}</span>
-                        <span class="detail-tag">👥 ${applicantCount}+ Applicants</span>
-                        <span class="detail-tag">📅 ${datePosted}</span>
+                        <span class="detail-tag">💰 ${salary}</span>
+                        <span class="detail-tag match-score-tag">✓ Good Match</span>
                     </div>
                 `;
                 
                 jobCard.addEventListener('click', () => {
-                    if (currentSelectedJobId) {
-                        document.querySelector(`[data-job-id="${currentSelectedJobId}"]`)?.classList.remove('selected');
+                    if (window.innerWidth <= 900) {
+                        openMobileJobDetailModal(jobData);
+                    } else {
+                        if (currentSelectedJobId) {
+                            document.querySelector(`[data-job-id="${currentSelectedJobId}"]`)?.classList.remove('selected');
+                        }
+                        jobCard.classList.add('selected');
+                        currentSelectedJobId = jobData.id;
+                        showJobDetailsInPane(jobData);
                     }
-                    jobCard.classList.add('selected');
-                    currentSelectedJobId = jobData.id;
-                    showJobDetails(jobData);
                 });
                 jobsContainer.appendChild(jobCard);
             });
         }
 
-        function showJobDetails(jobData) {
+        function getJobDetailHTML(jobData) {
             const {
                 'Job Title': jobTitle = 'N/A', 'Company': company = 'N/A', 'Location': location = 'Remote',
                 'Description': description = 'No description provided.', 'Apply Link': applyLink = '#',
@@ -551,35 +599,52 @@
                 'Experience Level': experience = 'Not specified'
             } = jobData;
 
+            return `
+                <p><strong>${company} - ${location}</strong></p>
+                <a href="${applyLink}" target="_blank" class="search-button apply-button" style="display:block; text-align:center; text-decoration:none; margin-bottom: 24px;">Apply Now</a>
+                <h3>Job Description</h3>
+                <button class="summarize-button" id="summarize-btn">✨ Summarize with AI</button>
+                <div id="ai-summary-output"></div>
+                <p id="full-description">${description.replace(/\n/g, '<br>')}</p>
+                <div class="decorative-divider"></div>
+                <h3>Job Overview</h3>
+                <div class="summary-item"><strong>Salary</strong><span>${salary}</span></div>
+                <div class="summary-item"><strong>Job Type</strong><span>${jobType}</span></div>
+                <div class="summary-item"><strong>Experience Level</strong><span>${experience}</span></div>
+                <button class="ai-feature-button" id="ai-interview-prep-btn">✨ AI Interview Prep</button>
+                <button class="ai-feature-button" disabled title="Coming Soon!">AI Match Score</button>
+            `;
+        }
+
+        function showJobDetailsInPane(jobData) {
+            const { 'Job Title': jobTitle = 'N/A' } = jobData;
             detailPane.innerHTML = `
                 <div class="detail-header">
                     <h2>${jobTitle}</h2>
-                    <p>${company} - ${location}</p>
                 </div>
                 <div class="detail-body">
-                    <div class="detail-summary">
-                        <a href="${applyLink}" target="_blank" class="apply-button">Apply Now</a>
-                        <div class="summary-item"><strong>Salary</strong><span>${salary}</span></div>
-                        <div class="summary-item"><strong>Job Type</strong><span>${jobType}</span></div>
-                        <div class="summary-item"><strong>Experience Level</strong><span>${experience}</span></div>
-                        <button class="ai-feature-button" id="ai-interview-prep-btn">✨ AI Interview Prep</button>
-                        <button class="ai-feature-button" disabled title="Coming Soon!">AI Match Score</button>
-                    </div>
-                    <h3>Job Description</h3>
-                    <button class="summarize-button" id="summarize-btn">✨ Summarize with AI</button>
-                    <div id="ai-summary-output"></div>
-                    <p id="full-description">${description.replace(/\n/g, '<br>')}</p>
+                    ${getJobDetailHTML(jobData)}
                 </div>
             `;
-
             detailPane.querySelector('.apply-button').addEventListener('click', () => alert('Application Tracked! You will now be redirected.'));
-            detailPane.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(description));
-            detailPane.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobTitle, description));
+            detailPane.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(jobData['Description']));
+            detailPane.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobData['Job Title'], jobData['Description']));
+        }
+
+        function openMobileJobDetailModal(jobData) {
+            document.getElementById('mobile-modal-job-title').textContent = jobData['Job Title'] || 'N/A';
+            const modalBody = document.getElementById('mobile-modal-body');
+            modalBody.innerHTML = getJobDetailHTML(jobData);
+            mobileJobDetailModal.classList.add('visible');
+            
+            modalBody.querySelector('.apply-button').addEventListener('click', () => alert('Application Tracked! You will now be redirected.'));
+            modalBody.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(jobData['Description'], true));
+            modalBody.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobData['Job Title'], jobData['Description']));
         }
 
         async function callGeminiAPI(prompt) {
             if (!GEMINI_API_KEY) {
-                return { error: "To use AI features, please add your Gemini API key to the script section of the HTML file." };
+                return { error: "To use AI features, please add your Gemini API key." };
             }
             try {
                 const response = await fetch(GEMINI_API_URL, {
@@ -592,12 +657,17 @@
                 return { text: data.candidates[0].content.parts[0].text };
             } catch (error) {
                 console.error('Gemini API Error:', error);
-                return { error: "Sorry, the AI feature is currently unavailable. Please try again later." };
+                return { error: "Sorry, the AI feature is currently unavailable." };
             }
         }
 
-        async function generateSummary(description) {
-            const summaryOutput = document.getElementById('ai-summary-output');
+        async function generateSummary(description, isMobile = false) {
+            const summaryOutput = isMobile 
+                ? document.querySelector('#mobile-modal-body #ai-summary-output') 
+                : document.getElementById('ai-summary-output');
+            
+            if (!summaryOutput) return;
+            
             summaryOutput.innerHTML = `<p><em>Generating summary...</em></p>`;
             const prompt = `Summarize the following job description into three key bullet points covering the main responsibilities and requirements:\n\n${description}`;
             const result = await callGeminiAPI(prompt);
@@ -656,10 +726,12 @@
         searchBar.addEventListener('keyup', filterJobs);
         document.querySelector('.search-button').addEventListener('click', filterJobs);
 
-        interviewModal.addEventListener('click', (e) => {
-            if (e.target === interviewModal || e.target.classList.contains('close-button')) {
-                interviewModal.classList.remove('visible');
-            }
+        [interviewModal, mobileJobDetailModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal || e.target.classList.contains('close-button')) {
+                    modal.classList.remove('visible');
+                }
+            });
         });
 
         document.addEventListener('DOMContentLoaded', loadJobs);
