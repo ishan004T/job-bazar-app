@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Job Bazar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #556B2F;
+            --secondary-color: #8B4513;
+            --accent-color: #E3856B;
+            --background-color: #F0F2E6; /* Lighter Parchment for a workshop feel */
+            --card-background: #FFFFFF;
+            --text-color: #2F2F2F;
+            --subtle-text: #6B7280;
+            --border-color: #D1D5DB;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .header {
+            background: var(--card-background);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-family: 'Lora', serif;
+            margin: 0;
+            font-size: 1.75rem;
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .form-panel {
+            background: var(--card-background);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            align-self: start;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .form-panel h2 {
+            font-family: 'Lora', serif;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn, .clear-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .submit-btn:hover {
+            background-color: #D47155;
+        }
+        .clear-btn {
+            background-color: #E5E7EB;
+            color: var(--text-color);
+        }
+        .clear-btn:hover {
+            background-color: #D1D5DB;
+        }
+
+        .job-list-panel h2 {
+            font-family: 'Lora', serif;
+        }
+
+        .job-item {
+            background: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .job-item-info h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.25rem;
+        }
+        .job-item-info p {
+            margin: 0;
+            color: var(--subtle-text);
+        }
+        .job-item-actions button {
+            margin-left: 0.5rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .edit-btn:hover {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+        .delete-btn:hover {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .form-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Job Bazar - Admin Portal</h1>
+    </header>
+
+    <div class="container">
+        <div class="form-panel">
+            <h2 id="form-title">Add New Job</h2>
+            <form id="job-form">
+                <input type="hidden" id="job-id">
+                <div class="form-group">
+                    <label for="job-title">Job Title</label>
+                    <input type="text" id="job-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="salary">Salary</label>
+                    <input type="text" id="salary">
+                </div>
+                <div class="form-group">
+                    <label for="job-type">Job Type</label>
+                    <input type="text" id="job-type">
+                </div>
+                <div class="form-group">
+                    <label for="experience-level">Experience Level</label>
+                    <input type="text" id="experience-level">
+                </div>
+                <div class="form-group">
+                    <label for="apply-link">Apply Link</label>
+                    <input type="url" id="apply-link" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Save Job</button>
+                    <button type="button" class="clear-btn" id="clear-btn">Clear Form</button>
+                </div>
+            </form>
+        </div>
+        <div class="job-list-panel">
+            <h2>Current Job Listings</h2>
+            <div id="job-list">
+                <!-- Jobs will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // --- START OF FIREBASE SETUP ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDjn8WgssBtikX6QKxHXnDsheeSz8cvw3k",
+          authDomain: "job-bazar-app.firebaseapp.com",
+          projectId: "job-bazar-app",
+          storageBucket: "job-bazar-app.firebasestorage.app",
+          messagingSenderId: "1092941552619",
+          appId: "1:1092941552619:web:1c93949ed0acdada6a17ae"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        // --- END OF FIREBASE SETUP ---
+
+        const jobForm = document.getElementById('job-form');
+        const jobListContainer = document.getElementById('job-list');
+        const formTitle = document.getElementById('form-title');
+        const jobIdInput = document.getElementById('job-id');
+        const clearBtn = document.getElementById('clear-btn');
+
+        // Function to render the list of jobs
+        const renderJobList = (jobs) => {
+            jobListContainer.innerHTML = '';
+            if (jobs.length === 0) {
+                jobListContainer.innerHTML = '<p>No jobs found.</p>';
+                return;
+            }
+            jobs.forEach(job => {
+                const jobItem = document.createElement('div');
+                jobItem.className = 'job-item';
+                jobItem.innerHTML = `
+                    <div class="job-item-info">
+                        <h3>${job['Job Title']}</h3>
+                        <p>${job['Company']} - ${job['Location']}</p>
+                    </div>
+                    <div class="job-item-actions">
+                        <button class="edit-btn" data-id="${job.id}">Edit</button>
+                        <button class="delete-btn" data-id="${job.id}">Delete</button>
+                    </div>
+                `;
+                jobListContainer.appendChild(jobItem);
+            });
+        };
+
+        // Load jobs in real-time
+        db.collection('jobs').onSnapshot(snapshot => {
+            const jobs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderJobList(jobs);
+        });
+
+        // Handle form submission (Add or Update)
+        jobForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = jobIdInput.value;
+            const jobData = {
+                'Job Title': document.getElementById('job-title').value,
+                'Company': document.getElementById('company').value,
+                'Location': document.getElementById('location').value,
+                'Salary': document.getElementById('salary').value,
+                'Job Type': document.getElementById('job-type').value,
+                'Experience Level': document.getElementById('experience-level').value,
+                'Apply Link': document.getElementById('apply-link').value,
+                'Description': document.getElementById('description').value,
+                'datePosted': new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) // Add a post date
+            };
+
+            try {
+                if (id) {
+                    // Update existing job
+                    await db.collection('jobs').doc(id).update(jobData);
+                    alert('Job updated successfully!');
+                } else {
+                    // Add new job
+                    await db.collection('jobs').add(jobData);
+                    alert('Job added successfully!');
+                }
+                clearForm();
+            } catch (error) {
+                console.error("Error saving job: ", error);
+                alert('Error saving job. See console for details.');
+            }
+        });
+
+        // Handle clicks on Edit and Delete buttons
+        jobListContainer.addEventListener('click', async (e) => {
+            const id = e.target.dataset.id;
+            if (!id) return;
+
+            if (e.target.classList.contains('edit-btn')) {
+                // Edit job
+                const doc = await db.collection('jobs').doc(id).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    formTitle.textContent = 'Edit Job';
+                    jobIdInput.value = id;
+                    document.getElementById('job-title').value = data['Job Title'] || '';
+                    document.getElementById('company').value = data['Company'] || '';
+                    document.getElementById('location').value = data['Location'] || '';
+                    document.getElementById('salary').value = data['Salary'] || '';
+                    document.getElementById('job-type').value = data['Job Type'] || '';
+                    document.getElementById('experience-level').value = data['Experience Level'] || '';
+                    document.getElementById('apply-link').value = data['Apply Link'] || '';
+                    document.getElementById('description').value = data['Description'] || '';
+                    window.scrollTo(0, 0); // Scroll to top to see the form
+                }
+            } else if (e.target.classList.contains('delete-btn')) {
+                // Delete job
+                if (confirm('Are you sure you want to delete this job?')) {
+                    try {
+                        await db.collection('jobs').doc(id).delete();
+                        alert('Job deleted successfully!');
+                        clearForm();
+                    } catch (error) {
+                        console.error("Error deleting job: ", error);
+                        alert('Error deleting job. See console for details.');
+                    }
+                }
+            }
+        });
+
+        // Clear form function
+        const clearForm = () => {
+            jobForm.reset();
+            jobIdInput.value = '';
+            formTitle.textContent = 'Add New Job';
+        };
+
+        clearBtn.addEventListener('click', clearForm);
+
+    </script>
+</body>
+</html>
