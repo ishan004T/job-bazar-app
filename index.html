@@ -49,17 +49,46 @@
             text-decoration: none;
             color: var(--primary-color);
         }
+        .logo:hover {
+            text-decoration: none;
+        }
         .logo-text {
             font-family: 'Lora', serif;
             font-weight: 700;
             font-size: 1.75rem;
         }
+        
+        .auth-buttons button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .auth-buttons button.primary {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .auth-buttons button:hover {
+            background-color: #F0F2E6;
+        }
+        .auth-buttons button.primary:hover {
+            background-color: #4A5C28;
+        }
+        #user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
         .hero {
             text-align: center;
             padding: 6rem 1.5rem 5rem;
-            background-color: #F0F2E6;
-            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23556B2F" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
         }
 
         .hero h1 {
@@ -132,6 +161,27 @@
             justify-content: space-between;
             align-items: center;
         }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        .tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        .tab:hover {
+            background-color: #F0F2E6;
+        }
 
         #job-count {
             font-size: 16px;
@@ -143,8 +193,8 @@
             display: grid;
             gap: 1.5rem;
             overflow-y: auto;
-            max-height: 75vh;
-            padding-right: 8px;
+            max-height: 75vh; /* Make list scrollable */
+            padding-right: 8px; /* For scrollbar */
         }
 
         .job-card {
@@ -217,29 +267,6 @@
             color: var(--subtle-text);
             border: 1px solid var(--border-color);
         }
-        .match-score-tag {
-            background-color: #E6F8F2;
-            color: #047857;
-            font-weight: 600;
-        }
-        .save-job-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.2s ease, background-color 0.2s ease;
-        }
-        .job-card:hover .save-job-btn {
-            opacity: 1;
-        }
-        .save-job-btn:hover {
-            background-color: #F3F4F6;
-        }
 
         .detail-pane {
             background: var(--card-background);
@@ -284,6 +311,29 @@
         }
         .detail-body h3 {
             font-family: 'Lora', serif;
+        }
+        
+        .bookmark-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        .bookmark-btn:hover {
+            background-color: #F3F4F6;
+        }
+        .bookmark-btn svg {
+            stroke: var(--subtle-text);
+            fill: none;
+        }
+        .bookmark-btn.saved svg {
+            fill: var(--primary-color);
+            stroke: var(--primary-color);
         }
         
         .detail-summary {
@@ -357,7 +407,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
-            display: none; /* Hidden by default */
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
@@ -372,13 +422,10 @@
             background: var(--card-background);
             border-radius: 16px;
             width: 90%;
-            max-width: 700px;
+            max-width: 450px;
             box-shadow: var(--shadow-lg);
             transform: scale(0.95);
             transition: transform 0.3s ease;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
         }
         .modal-overlay.visible .modal-content {
             transform: scale(1);
@@ -386,7 +433,6 @@
         .modal-header {
             padding: 24px;
             border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0;
         }
         .modal-header h2 {
             font-family: 'Lora', serif;
@@ -394,17 +440,12 @@
         }
         .modal-body {
             padding: 24px;
-            overflow-y: auto;
             line-height: 1.6;
-        }
-        .modal-body ul {
-            padding-left: 20px;
         }
         .modal-footer {
             padding: 16px 24px;
             border-top: 1px solid var(--border-color);
             text-align: right;
-            flex-shrink: 0;
         }
         .close-button {
             background: #F3F4F6;
@@ -414,8 +455,41 @@
             cursor: pointer;
             font-weight: 600;
         }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            color: var(--subtle-text);
+        }
 
-        /* Responsive Design */
         @media (max-width: 900px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -433,12 +507,15 @@
 <body>
     <header class="header">
         <a href="#" class="logo">
-             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="var(--primary-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M12 2L13.55 5.13L15.5 6.27L13.55 7.41L12 10.54L10.45 7.41L8.5 6.27L10.45 5.13L12 2Z" fill="var(--primary-color)" opacity="0.5"/>
             </svg>
             <span class="logo-text">Job Bazar</span>
         </a>
+        <div class="auth-buttons" id="auth-container">
+            <!-- Auth state will be rendered here -->
+        </div>
     </header>
 
     <section class="hero">
@@ -452,6 +529,9 @@
 
     <main class="main-layout">
         <div class="results-column">
+            <div class="tabs" id="tabs-container">
+                <!-- Tabs will be rendered here -->
+            </div>
             <div class="results-header">
                 <div id="job-count">Loading jobs...</div>
             </div>
@@ -467,6 +547,37 @@
         </div>
     </main>
 
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="auth-modal-title">Sign In</h2>
+            </div>
+            <div class="modal-body">
+                <form id="email-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="search-button" style="width: 100%;" id="email-form-button">Sign In</button>
+                    <p id="auth-error" style="color: red;"></p>
+                </form>
+                <div class="divider">OR</div>
+                <button class="google-btn" id="google-signin-btn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.20455C17.64 8.56636 17.5832 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957275V13.0418C2.43818 15.9832 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29H0.957275C0.347727 8.55 0 10.0145 0 11.5C0 12.9855 0.347727 14.45 0.957275 15.71L3.96409 13.4582V10.71Z" fill="#FBBC05"/><path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.925L15.0218 2.34364C13.4673 0.891818 11.43 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/></svg>
+                    <span>Sign in with Google</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="close-button">Close</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- AI Interview Prep Modal -->
     <div class="modal-overlay" id="ai-interview-modal">
         <div class="modal-content">
@@ -482,14 +593,22 @@
         </div>
     </div>
     
-    <!-- Mobile Job Detail Modal -->
-    <div class="modal-overlay" id="mobile-job-detail-modal">
-        <div class="modal-content">
+    <!-- Dashboard Modal -->
+    <div class="modal-overlay" id="dashboard-modal">
+        <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 id="mobile-modal-job-title"></h2>
+                <h2>My Dashboard</h2>
             </div>
-            <div class="modal-body" id="mobile-modal-body">
-                <!-- Mobile job details will be populated here -->
+            <div class="modal-body">
+                <h3>My Career Goals</h3>
+                <p>Help our AI find the best jobs for you. What is your primary career goal right now?</p>
+                <form id="career-goals-form">
+                    <div class="form-group">
+                        <label for="career-goal">Describe your ideal next role or career path:</label>
+                        <textarea id="career-goal" placeholder="e.g., 'I'm a junior developer looking to move into a mid-level role focused on backend systems with Python and AWS.'"></textarea>
+                    </div>
+                    <button type="submit" class="search-button" style="width: 100%;">Save Goals</button>
+                </form>
             </div>
             <div class="modal-footer">
                 <button class="close-button">Close</button>
@@ -499,6 +618,7 @@
 
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
@@ -513,10 +633,12 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
         // --- END OF FIREBASE SETUP ---
 
         // --- START OF GEMINI API SETUP ---
-        const GEMINI_API_KEY = "AIzaSyDc1-R-6XAGEpyQJFOvDKrPVfxHMlHD6ms";
+        const GEMINI_API_KEY = ""; // PASTE YOUR GEMINI API KEY HERE
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
         // --- END OF GEMINI API SETUP ---
 
@@ -524,19 +646,100 @@
         const searchBar = document.getElementById('search-bar');
         const jobCountElement = document.getElementById('job-count');
         const detailPane = document.getElementById('job-detail-pane');
+        const authModal = document.getElementById('auth-modal');
+        const authContainer = document.getElementById('auth-container');
+        const tabsContainer = document.getElementById('tabs-container');
         const interviewModal = document.getElementById('ai-interview-modal');
         const interviewQuestionsOutput = document.getElementById('interview-questions-output');
-        const mobileJobDetailModal = document.getElementById('mobile-job-detail-modal');
+        const dashboardModal = document.getElementById('dashboard-modal');
         
         let allJobs = [];
+        let currentUser = null;
+        let userData = { savedJobs: [], careerGoal: '' };
+        let currentView = 'all'; // 'all', 'saved', 'recommended'
         let currentSelectedJobId = null;
 
+        // --- AUTHENTICATION ---
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                currentUser = user;
+                await fetchUserData(user.uid);
+                authContainer.innerHTML = `<div id="user-info"><span>${user.email}</span><button id="dashboard-btn">My Dashboard</button><button id="sign-out-btn">Sign Out</button></div>`;
+                document.getElementById('sign-out-btn').addEventListener('click', () => auth.signOut());
+                document.getElementById('dashboard-btn').addEventListener('click', openDashboardModal);
+            } else {
+                currentUser = null;
+                userData = { savedJobs: [], careerGoal: '' };
+                authContainer.innerHTML = `<button id="signin-btn">Sign In</button><button id="signup-btn" class="primary">Sign Up</button>`;
+                document.getElementById('signin-btn').addEventListener('click', () => openAuthModal(false));
+                document.getElementById('signup-btn').addEventListener('click', () => openAuthModal(true));
+            }
+            renderTabs();
+            filterAndDisplayJobs();
+        });
+
+        async function fetchUserData(uid) {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+                userData = userDoc.data();
+            } else {
+                const newUser = { savedJobs: [], careerGoal: '' };
+                await db.collection('users').doc(uid).set(newUser);
+                userData = newUser;
+            }
+        }
+
+        function openAuthModal(isSignUp = false) {
+            document.getElementById('auth-modal-title').textContent = isSignUp ? 'Sign Up' : 'Sign In';
+            document.getElementById('email-form-button').textContent = isSignUp ? 'Sign Up' : 'Sign In';
+            document.getElementById('auth-error').textContent = '';
+            authModal.classList.add('visible');
+        }
+
+        document.getElementById('email-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const isSignUp = document.getElementById('email-form-button').textContent === 'Sign Up';
+
+            const action = isSignUp 
+                ? auth.createUserWithEmailAndPassword(email, password)
+                : auth.signInWithEmailAndPassword(email, password);
+            
+            action.then(() => authModal.classList.remove('visible'))
+                  .catch(err => document.getElementById('auth-error').textContent = err.message);
+        });
+
+        document.getElementById('google-signin-btn').addEventListener('click', () => {
+            auth.signInWithPopup(googleProvider)
+                .then(() => authModal.classList.remove('visible'))
+                .catch(err => document.getElementById('auth-error').textContent = err.message);
+        });
+        
+        function openDashboardModal() {
+            document.getElementById('career-goal').value = userData.careerGoal || '';
+            dashboardModal.classList.add('visible');
+        }
+        
+        document.getElementById('career-goals-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newGoal = document.getElementById('career-goal').value;
+            if (currentUser) {
+                await db.collection('users').doc(currentUser.uid).update({ careerGoal: newGoal });
+                userData.careerGoal = newGoal;
+                alert('Career goals saved!');
+                dashboardModal.classList.remove('visible');
+                renderTabs(); // Re-render tabs in case recommendations are now available
+            }
+        });
+
+        // --- JOB DISPLAY & FILTERING ---
         function displayJobs(jobs) {
             jobsContainer.innerHTML = '';
             jobCountElement.textContent = `${jobs.length} jobs found`;
 
             if (jobs.length === 0) {
-                jobsContainer.innerHTML = '<p class="message">No jobs found. Try a different search term.</p>';
+                jobsContainer.innerHTML = '<p class="message">No jobs found.</p>';
                 return;
             }
 
@@ -550,10 +753,11 @@
                     'Location': location = 'Remote', 'Salary': salary = 'N/A'
                 } = jobData;
                 const companyInitial = company.charAt(0).toUpperCase();
+                const isSaved = userData.savedJobs.includes(jobData.id);
 
                 jobCard.innerHTML = `
-                    <button class="save-job-btn" title="Save Job">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    <button class="bookmark-btn ${isSaved ? 'saved' : ''}" title="Bookmark Job">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                     </button>
                     <div class="card-top">
                         <div class="company-logo">${companyInitial}</div>
@@ -565,27 +769,25 @@
                     <div class="card-details">
                         <span class="detail-tag">📍 ${location}</span>
                         <span class="detail-tag">💰 ${salary}</span>
-                        <span class="detail-tag match-score-tag">✓ Good Match</span>
                     </div>
                 `;
                 
-                jobCard.addEventListener('click', () => {
-                    if (window.innerWidth <= 900) {
-                        openMobileJobDetailModal(jobData);
-                    } else {
-                        if (currentSelectedJobId) {
-                            document.querySelector(`[data-job-id="${currentSelectedJobId}"]`)?.classList.remove('selected');
-                        }
-                        jobCard.classList.add('selected');
-                        currentSelectedJobId = jobData.id;
-                        showJobDetailsInPane(jobData);
-                    }
+                jobCard.addEventListener('click', () => showJobDetails(jobData));
+                jobCard.querySelector('.bookmark-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleBookmark(jobData.id);
                 });
                 jobsContainer.appendChild(jobCard);
             });
         }
 
-        function getJobDetailHTML(jobData) {
+        function showJobDetails(jobData) {
+            if (currentSelectedJobId) {
+                document.querySelector(`[data-job-id="${currentSelectedJobId}"]`)?.classList.remove('selected');
+            }
+            document.querySelector(`[data-job-id="${jobData.id}"]`)?.classList.add('selected');
+            currentSelectedJobId = jobData.id;
+
             const {
                 'Job Title': jobTitle = 'N/A', 'Company': company = 'N/A', 'Location': location = 'Remote',
                 'Description': description = 'No description provided.', 'Apply Link': applyLink = '#',
@@ -593,48 +795,103 @@
                 'Experience Level': experience = 'Not specified'
             } = jobData;
 
-            return `
-                <p><strong>${company} - ${location}</strong></p>
-                <a href="${applyLink}" target="_blank" class="search-button apply-button" style="display:block; text-align:center; text-decoration:none; margin-bottom: 24px;">Apply Now</a>
-                <h3>Job Description</h3>
-                <button class="summarize-button" id="summarize-btn">✨ Summarize with AI</button>
-                <div id="ai-summary-output"></div>
-                <p id="full-description">${description.replace(/\n/g, '<br>')}</p>
-                <div class="decorative-divider"></div>
-                <h3>Job Overview</h3>
-                <div class="summary-item"><strong>Salary</strong><span>${salary}</span></div>
-                <div class="summary-item"><strong>Job Type</strong><span>${jobType}</span></div>
-                <div class="summary-item"><strong>Experience Level</strong><span>${experience}</span></div>
-                <button class="ai-feature-button" id="ai-interview-prep-btn">✨ AI Interview Prep</button>
-                <button class="ai-feature-button" disabled title="Coming Soon!">AI Match Score</button>
-            `;
-        }
-
-        function showJobDetailsInPane(jobData) {
-            const { 'Job Title': jobTitle = 'N/A' } = jobData;
             detailPane.innerHTML = `
                 <div class="detail-header">
                     <h2>${jobTitle}</h2>
+                    <p>${company} - ${location}</p>
                 </div>
                 <div class="detail-body">
-                    ${getJobDetailHTML(jobData)}
+                    <a href="${applyLink}" target="_blank" class="search-button apply-button" style="display:block; text-align:center; text-decoration:none; margin-bottom: 24px;">Apply Now</a>
+                    <h3>Job Description</h3>
+                    <button class="summarize-button" id="summarize-btn">✨ Summarize with AI</button>
+                    <div id="ai-summary-output"></div>
+                    <p id="full-description">${description.replace(/\n/g, '<br>')}</p>
+                    <div class="decorative-divider"></div>
+                    <h3>Job Overview</h3>
+                    <div class="summary-item"><strong>Salary</strong><span>${salary}</span></div>
+                    <div class="summary-item"><strong>Job Type</strong><span>${jobType}</span></div>
+                    <div class="summary-item"><strong>Experience Level</strong><span>${experience}</span></div>
+                    <button class="ai-feature-button" id="ai-interview-prep-btn">✨ AI Interview Prep</button>
+                    <button class="ai-feature-button" disabled title="Coming Soon!">AI Match Score</button>
                 </div>
             `;
-            detailPane.querySelector('.apply-button').addEventListener('click', () => alert('Application Tracked! You will now be redirected.'));
-            detailPane.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(jobData['Description']));
-            detailPane.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobData['Job Title'], jobData['Description']));
+            
+            detailPane.querySelector('.apply-button').addEventListener('click', () => alert('Application Tracked!'));
+            detailPane.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(description));
+            detailPane.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobTitle, description));
         }
 
-        function openMobileJobDetailModal(jobData) {
-            document.getElementById('mobile-modal-job-title').textContent = jobData['Job Title'] || 'N/A';
-            const modalBody = document.getElementById('mobile-modal-body');
-            modalBody.innerHTML = getJobDetailHTML(jobData);
-            mobileJobDetailModal.classList.add('visible');
+        async function toggleBookmark(jobId) {
+            if (!currentUser) {
+                alert('Please sign in to save jobs.');
+                return;
+            }
+            const userRef = db.collection('users').doc(currentUser.uid);
+            const isCurrentlySaved = userData.savedJobs.includes(jobId);
+            const updatedSavedJobs = isCurrentlySaved
+                ? userData.savedJobs.filter(id => id !== jobId)
+                : [...userData.savedJobs, jobId];
             
-            modalBody.querySelector('.apply-button').addEventListener('click', () => alert('Application Tracked! You will now be redirected.'));
-            modalBody.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(jobData['Description'], true));
-            modalBody.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobData['Job Title'], jobData['Description']));
+            await userRef.update({ savedJobs: updatedSavedJobs });
+            userData.savedJobs = updatedSavedJobs;
+            filterAndDisplayJobs();
+            renderTabs();
         }
+        
+        function filterAndDisplayJobs() {
+            const searchTerm = searchBar.value.toLowerCase();
+            let jobsToDisplay = allJobs.filter(job => {
+                const title = (job['Job Title'] || '').toLowerCase();
+                const company = (job['Company'] || '').toLowerCase();
+                return title.includes(searchTerm) || company.includes(searchTerm);
+            });
+
+            if (currentView === 'saved') {
+                jobsToDisplay = jobsToDisplay.filter(job => userData.savedJobs.includes(job.id));
+            }
+            
+            displayJobs(jobsToDisplay);
+        }
+
+        // --- TABS & AI RECOMMENDATIONS ---
+        function renderTabs() {
+            tabsContainer.innerHTML = '';
+            const allTab = document.createElement('div');
+            allTab.className = 'tab active';
+            allTab.textContent = 'All Jobs';
+            allTab.dataset.view = 'all';
+            tabsContainer.appendChild(allTab);
+
+            if (currentUser) {
+                const savedTab = document.createElement('div');
+                savedTab.className = 'tab';
+                savedTab.textContent = 'Saved Jobs';
+                savedTab.dataset.view = 'saved';
+                tabsContainer.appendChild(savedTab);
+
+                if (userData.careerGoal) {
+                    const recommendedTab = document.createElement('div');
+                    recommendedTab.className = 'tab';
+                    recommendedTab.textContent = '✨ Recommended for You';
+                    recommendedTab.dataset.view = 'recommended';
+                    tabsContainer.appendChild(recommendedTab);
+                }
+            }
+        }
+
+        tabsContainer.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('tab')) {
+                document.querySelector('.tab.active')?.classList.remove('active');
+                e.target.classList.add('active');
+                currentView = e.target.dataset.view;
+
+                if (currentView === 'recommended') {
+                    await getAIRecommendations();
+                } else {
+                    filterAndDisplayJobs();
+                }
+            }
+        });
 
         async function callGeminiAPI(prompt) {
             if (!GEMINI_API_KEY) {
@@ -655,11 +912,8 @@
             }
         }
 
-        async function generateSummary(description, isMobile = false) {
-            const summaryOutput = isMobile 
-                ? document.querySelector('#mobile-modal-body #ai-summary-output') 
-                : document.getElementById('ai-summary-output');
-            
+        async function generateSummary(description) {
+            const summaryOutput = document.getElementById('ai-summary-output');
             if (!summaryOutput) return;
             
             summaryOutput.innerHTML = `<p><em>Generating summary...</em></p>`;
@@ -688,11 +942,40 @@
             }
         }
 
+        async function getAIRecommendations() {
+            jobsContainer.innerHTML = '<p class="message">✨ Asking our AI for recommendations...</p>';
+            
+            const availableJobsJSON = JSON.stringify(allJobs);
+            
+            const prompt = `Act as an expert career advisor. A user has specified their career goal: "${userData.careerGoal}". Based on this goal, analyze the following complete list of available jobs and identify the top 5 most relevant recommendations. Return ONLY a JSON array of the full job objects for the recommended jobs. Do not include any other text or explanation.\n\nAVAILABLE JOBS:\n${availableJobsJSON}`;
+
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+                if (!response.ok) throw new Error('AI API request failed');
+                
+                const data = await response.json();
+                const recommendedJobs = JSON.parse(data.candidates[0].content.parts[0].text);
+                displayJobs(recommendedJobs);
+
+            } catch (error) {
+                console.error("AI Recommendation Error:", error);
+                jobsContainer.innerHTML = '<p class="message">Sorry, we could not generate recommendations at this time.</p>';
+            }
+        }
+
+        // --- INITIAL LOAD ---
         async function loadJobs() {
             try {
                 db.collection('jobs').onSnapshot(snapshot => {
                     allJobs = snapshot.empty ? [] : snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    displayJobs(allJobs);
+                    filterAndDisplayJobs();
                 }, error => {
                      console.error("Error fetching jobs from Firestore: ", error);
                      jobsContainer.innerHTML = `<p class="message"><strong>Error connecting to the database.</strong></p>`;
@@ -704,23 +987,11 @@
                 console.error('Firestore Initialization Error:', error);
             }
         }
-
-        function filterJobs() {
-            const searchTerm = searchBar.value.toLowerCase();
-            const filteredJobs = allJobs.filter(job => {
-                const title = (job['Job Title'] || '').toLowerCase();
-                const company = (job['Company'] || '').toLowerCase();
-                const location = (job['Location'] || '').toLowerCase();
-                return title.includes(searchTerm) || company.includes(searchTerm) || location.includes(searchTerm);
-            });
-            displayJobs(filteredJobs);
-            detailPane.innerHTML = `<div class="detail-placeholder"><h3>Select a job to view details</h3><p>Your next opportunity is just a click away.</p></div>`;
-        }
         
-        searchBar.addEventListener('keyup', filterJobs);
-        document.querySelector('.search-button').addEventListener('click', filterJobs);
+        searchBar.addEventListener('keyup', filterAndDisplayJobs);
+        document.querySelector('.search-button').addEventListener('click', filterAndDisplayJobs);
 
-        [interviewModal, mobileJobDetailModal].forEach(modal => {
+        [authModal, interviewModal, dashboardModal].forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal || e.target.classList.contains('close-button')) {
                     modal.classList.remove('visible');
