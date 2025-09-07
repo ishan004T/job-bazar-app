@@ -7,12 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <style>
         :root {
-            --primary-color: #556B2F; /* Olive Drab - Grounded, Tranquil */
-            --secondary-color: #8B4513; /* Saddle Brown - Stable, Reliable */
-            --accent-color: #E3856B; /* Tangerine - Action, Optimism */
-            --background-color: #F5F5DC; /* Parchment - Warm, Approachable */
+            --primary-color: #556B2F; /* Olive Drab */
+            --secondary-color: #8B4513; /* Saddle Brown */
+            --accent-color: #E3856B; /* Tangerine */
+            --background-color: #F5F5DC; /* Parchment */
             --card-background: #FFFFFF;
             --text-color: #2F2F2F;
             --subtle-text: #6B7280;
@@ -21,6 +22,8 @@
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
+        /* --- General & Animations --- */
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -30,6 +33,16 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+        }
+        .hidden { display: none !important; }
+
+        /* --- Header --- */
         .header {
             background: var(--card-background);
             padding: 1rem 2rem;
@@ -41,24 +54,41 @@
             top: 0;
             z-index: 1000;
         }
-
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
-            text-decoration: none;
+            text-decoration: none !important;
             color: var(--primary-color);
         }
-        .logo:hover {
-            text-decoration: none;
-        }
+        .logo:hover { text-decoration: none !important; }
         .logo-text {
             font-family: 'Lora', serif;
             font-weight: 700;
             font-size: 1.75rem;
         }
-        
-        .auth-buttons button {
+        .header-nav {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        @media (min-width: 1024px) {
+            .header-nav { display: flex; }
+        }
+        .header-nav .nav-link {
+            font-weight: 600;
+            color: var(--subtle-text);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+        .header-nav .nav-link.active, .header-nav .nav-link:hover {
+            color: var(--primary-color);
+            background-color: #F0F2E6;
+        }
+        .auth-buttons button, .user-info button {
             background: transparent;
             border: 1px solid var(--border-color);
             padding: 0.5rem 1rem;
@@ -73,38 +103,34 @@
             color: white;
             border-color: var(--primary-color);
         }
-        .auth-buttons button:hover {
-            background-color: #F0F2E6;
-        }
-        .auth-buttons button.primary:hover {
-            background-color: #4A5C28;
-        }
-        #user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .header-right { display: flex; align-items: center; gap: 1rem; }
 
+        /* --- Hero Section --- */
         .hero {
             text-align: center;
-            padding: 6rem 1.5rem 5rem;
-            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            padding: 5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
         }
-
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #F0F2E6;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23556B2F" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            z-index: -1;
+        }
         .hero h1 {
             font-family: 'Lora', serif;
             margin: 0 0 1rem 0;
-            font-size: 36px;
-            font-weight: 700;
+            font-size: clamp(2rem, 5vw, 2.5rem);
         }
-
         .hero p {
-            font-size: 18px;
+            font-size: clamp(1rem, 2.5vw, 1.125rem);
             color: var(--subtle-text);
             max-width: 600px;
             margin: 0 auto 2.5rem auto;
         }
-        
         .search-wrapper {
             background: var(--card-background);
             border-radius: 50px;
@@ -115,7 +141,6 @@
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-lg);
         }
-
         #search-bar {
             flex-grow: 1;
             padding: 12px 24px;
@@ -124,7 +149,6 @@
             background: transparent;
             outline: none;
         }
-        
         .search-button {
             background: var(--accent-color);
             color: white;
@@ -134,69 +158,38 @@
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease-in-out;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .search-button:hover, .search-button:focus {
-            background: #D47155;
-            outline: 2px solid #F5BBAA;
         }
 
+        /* --- Main Content Layout --- */
+        .main-content { padding: 2rem 1.5rem; }
         .main-layout {
             display: grid;
             grid-template-columns: 40% 1fr;
             gap: 2rem;
             max-width: 1280px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+            margin: 0 auto;
         }
-
+        .results-column, .detail-pane {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .results-column.visible, .detail-pane.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .results-column {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 8px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1.5rem;
-        }
-        .tab {
-            padding: 12px 16px;
-            cursor: pointer;
-            font-weight: 500;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
-        .tab:hover {
-            background-color: #F0F2E6;
-        }
-
-        #job-count {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--subtle-text);
-        }
-
         #job-listings {
             display: grid;
             gap: 1.5rem;
             overflow-y: auto;
-            max-height: 75vh; /* Make list scrollable */
-            padding-right: 8px; /* For scrollbar */
+            max-height: 75vh;
+            padding-right: 8px;
         }
-
         .job-card {
             background-color: var(--card-background);
             border: 1px solid var(--border-color);
@@ -207,411 +200,206 @@
             cursor: pointer;
             position: relative;
         }
-
         .job-card.selected, .job-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
             border-color: var(--accent-color);
         }
-        
         .card-top {
             display: flex;
             gap: 16px;
             align-items: center;
             margin-bottom: 16px;
         }
-        
         .company-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 50px; height: 50px; border-radius: 12px;
             background-color: #F3F4F6;
             border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 1.5rem;
             color: var(--primary-color);
             flex-shrink: 0;
         }
-
-        .card-info h2 {
-            font-family: 'Lora', serif;
-            margin: 0;
-            font-size: 22px;
-            font-weight: 600;
-        }
-        
-        .card-info .company {
-            font-weight: 500;
-            color: var(--subtle-text);
-            margin-top: 4px;
-            font-size: 16px;
-        }
-
-        .card-details {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            font-size: 14px;
-        }
-        
+        .card-info h2 { font-family: 'Lora', serif; margin: 0; font-size: 22px; font-weight: 600; }
+        .card-info .company { font-weight: 500; color: var(--subtle-text); margin-top: 4px; font-size: 16px; }
+        .card-details { display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; }
         .detail-tag {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #F9FAFB;
-            padding: 6px 12px;
-            border-radius: 50px;
-            color: var(--subtle-text);
+            display: flex; align-items: center; gap: 6px;
+            background-color: #F9FAFB; padding: 6px 12px;
+            border-radius: 50px; color: var(--subtle-text);
             border: 1px solid var(--border-color);
         }
 
+        /* --- Detail Pane --- */
         .detail-pane {
             background: var(--card-background);
             border-radius: 16px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow);
-            position: sticky;
-            top: 100px;
+            position: sticky; top: 100px;
             max-height: 85vh;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
+        .detail-header { padding: 24px; border-bottom: 1px solid var(--border-color); }
+        .detail-header h2 { font-family: 'Lora', serif; margin: 0; font-size: 24px; }
+        .detail-body { padding: 24px; line-height: 1.6; }
+        .detail-body h3 { font-family: 'Lora', serif; }
 
-        .detail-placeholder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            height: 100%;
-            padding: 2rem;
-            color: var(--subtle-text);
-        }
-
-        .detail-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .detail-header h2 {
-            font-family: 'Lora', serif;
-            margin: 0;
-            font-size: 24px;
-        }
-        .detail-header p {
-            margin: 4px 0 0;
-            color: var(--subtle-text);
-        }
-        .detail-body {
-            padding: 24px;
-            line-height: 1.6;
-        }
-        .detail-body h3 {
-            font-family: 'Lora', serif;
-        }
-        
-        .bookmark-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background-color 0.2s ease;
-        }
-        .bookmark-btn:hover {
-            background-color: #F3F4F6;
-        }
-        .bookmark-btn svg {
-            stroke: var(--subtle-text);
-            fill: none;
-        }
-        .bookmark-btn.saved svg {
-            fill: var(--primary-color);
-            stroke: var(--primary-color);
-        }
-        
-        .detail-summary {
-            background-color: #F9FAFB;
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-top: 24px;
-        }
-        .detail-summary .apply-button {
-            width: 100%;
-            background-color: var(--accent-color);
+        /* --- AI Resume Rater --- */
+        #resume-rater-portal { text-align: center; max-width: 800px; margin: 2rem auto; }
+        #resume-upload-label {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
             color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
             font-weight: 600;
-            text-align: center;
-            display: block;
-            margin-bottom: 16px;
-        }
-        .detail-summary .apply-button:hover {
-            background-color: #D47155;
-        }
-        .summary-item {
-            margin-bottom: 16px;
-        }
-        .summary-item strong {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-        
-        .ai-feature-button, .summarize-button {
-            display: block;
-            width: 100%;
-            margin-top: 16px;
-            padding: 12px;
             border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: #F0F2E6;
-            color: var(--primary-color);
-            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            margin-bottom: 1rem;
+            transition: background-color 0.2s;
         }
-        .ai-feature-button:hover, .summarize-button:hover {
-             background-color: #E6E8D9;
+        #resume-upload-label:hover { background-color: #4A5C28; }
+        #resume-file-input { display: none; }
+        #file-name { color: var(--subtle-text); font-style: italic; }
+
+        #resume-results {
+            background: var(--card-background);
+            border-radius: 12px; padding: 2rem;
+            margin-top: 2rem; text-align: left;
+            opacity: 0; transition: opacity 0.5s;
         }
-        .ai-feature-button[disabled] {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .ai-summary-section {
-            background-color: #F9FAFB;
+        #resume-results.visible { opacity: 1; }
+        #resume-results h3 { font-family: 'Lora', serif; }
+        
+        /* --- Language Selector --- */
+        #language-selector {
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .ai-summary-section ul {
-            padding-left: 20px;
-            margin: 0;
+            padding: 0.5rem; border-radius: 8px;
+            font-weight: 600;
         }
 
-        /* Modal Styles */
+        /* --- Modals --- */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
+            display: none; align-items: center; justify-content: center;
+            z-index: 2000; opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .modal-overlay.visible {
-            display: flex;
-            opacity: 1;
-        }
+        .modal-overlay.visible { display: flex; opacity: 1; }
         .modal-content {
             background: var(--card-background);
             border-radius: 16px;
-            width: 90%;
-            max-width: 450px;
+            width: 90%; max-width: 450px;
             box-shadow: var(--shadow-lg);
             transform: scale(0.95);
             transition: transform 0.3s ease;
         }
-        .modal-overlay.visible .modal-content {
-            transform: scale(1);
-        }
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .modal-header h2 {
-            font-family: 'Lora', serif;
-            margin: 0;
-        }
-        .modal-body {
-            padding: 24px;
-            line-height: 1.6;
-        }
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border-color);
-            text-align: right;
-        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-header { padding: 24px; border-bottom: 1px solid var(--border-color); }
+        .modal-header h2 { font-family: 'Lora', serif; margin: 0; }
+        .modal-body { padding: 24px; line-height: 1.6; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); text-align: right; }
         .close-button {
-            background: #F3F4F6;
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
+            background: #F3F4F6; border: 1px solid var(--border-color);
+            padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;
         }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
         .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-sizing: border-box;
+            width: 100%; padding: 12px;
+            font-size: 16px; border: 1px solid var(--border-color);
+            border-radius: 8px; box-sizing: border-box;
         }
-        .google-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            color: var(--subtle-text);
-        }
-
+        
+        /* --- Responsive Design --- */
         @media (max-width: 900px) {
-            .main-layout {
-                grid-template-columns: 1fr;
+            .header-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--card-background);
+                border-top: 1px solid var(--border-color);
+                justify-content: space-around;
+                padding: 0.5rem 0;
+                display: flex; /* Ensure it's visible on mobile */
             }
-            .detail-pane {
-                display: none;
+            .header-nav .nav-link {
+                flex-direction: column;
+                font-size: 0.75rem;
+                gap: 2px;
             }
-            #job-listings {
-                max-height: none;
-                padding-right: 0;
-            }
+            body { padding-bottom: 70px; } /* Space for bottom nav */
+            .main-layout { grid-template-columns: 1fr; }
+            .detail-pane { display: none; }
+            #job-listings { max-height: none; padding-right: 0; }
         }
     </style>
 </head>
 <body>
+
     <header class="header">
         <a href="#" class="logo">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="var(--primary-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M12 2L13.55 5.13L15.5 6.27L13.55 7.41L12 10.54L10.45 7.41L8.5 6.27L10.45 5.13L12 2Z" fill="var(--primary-color)" opacity="0.5"/>
             </svg>
-            <span class="logo-text">Job Bazar</span>
+            <span class="logo-text" data-lang-key="logoText">Job Bazar</span>
         </a>
-        <div class="auth-buttons" id="auth-container">
-            <!-- Auth state will be rendered here -->
+        <nav class="header-nav" id="main-nav">
+            <!-- Nav links will be populated by JS -->
+        </nav>
+        <div class="header-right">
+            <select id="language-selector">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="bn">বাংলা</option>
+            </select>
+            <div class="auth-buttons" id="auth-container">
+                <!-- Auth state will be rendered here -->
+            </div>
         </div>
     </header>
 
-    <section class="hero">
-        <h1>Craft Your Career</h1>
-        <p>A thoughtfully curated space for professionals seeking meaningful work.</p>
-        <div class="search-wrapper">
-            <input type="text" id="search-bar" placeholder="Job Title, Skill, or Company">
-            <button class="search-button">Find Jobs</button>
-        </div>
-    </section>
-
-    <main class="main-layout">
-        <div class="results-column">
-            <div class="tabs" id="tabs-container">
-                <!-- Tabs will be rendered here -->
-            </div>
-            <div class="results-header">
-                <div id="job-count">Loading jobs...</div>
-            </div>
-            <div id="job-listings">
-                <!-- JS populates this -->
-            </div>
-        </div>
-        <div class="detail-pane" id="job-detail-pane">
-            <div class="detail-placeholder">
-                <h3>Select a job to view details</h3>
-                <p>Your next opportunity is just a click away.</p>
-            </div>
-        </div>
+    <main id="app-root">
+        <!-- SPA content will be rendered here by JavaScript -->
     </main>
 
-    <!-- Auth Modal -->
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="auth-modal-title">Sign In</h2>
-            </div>
-            <div class="modal-body">
-                <form id="email-form">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" required>
-                    </div>
-                    <button type="submit" class="search-button" style="width: 100%;" id="email-form-button">Sign In</button>
-                    <p id="auth-error" style="color: red;"></p>
-                </form>
-                <div class="divider">OR</div>
-                <button class="google-btn" id="google-signin-btn">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.20455C17.64 8.56636 17.5832 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957275V13.0418C2.43818 15.9832 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29H0.957275C0.347727 8.55 0 10.0145 0 11.5C0 12.9855 0.347727 14.45 0.957275 15.71L3.96409 13.4582V10.71Z" fill="#FBBC05"/><path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.925L15.0218 2.34364C13.4673 0.891818 11.43 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/></svg>
-                    <span>Sign in with Google</span>
-                </button>
-            </div>
-            <div class="modal-footer">
-                <button class="close-button">Close</button>
+    <!-- All Modals are defined once at the top level -->
+    <div id="modal-container">
+        <!-- Auth Modal -->
+        <div class="modal-overlay" id="auth-modal">
+            <div class="modal-content">
+                <div class="modal-header"><h2 id="auth-modal-title">Sign In</h2></div>
+                <div class="modal-body">
+                    <form id="email-form">
+                        <div class="form-group"><label for="email">Email</label><input type="email" id="email" required></div>
+                        <div class="form-group"><label for="password">Password</label><input type="password" id="password" required></div>
+                        <button type="submit" class="search-button" style="width: 100%;" id="email-form-button">Sign In</button>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="close-button">Close</button></div>
             </div>
         </div>
-    </div>
-    
-    <!-- AI Interview Prep Modal -->
-    <div class="modal-overlay" id="ai-interview-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>✨ AI Interview Prep</h2>
-            </div>
-            <div class="modal-body" id="interview-questions-output">
-                Generating questions...
-            </div>
-            <div class="modal-footer">
-                <button class="close-button">Close</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Dashboard Modal -->
-    <div class="modal-overlay" id="dashboard-modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h2>My Dashboard</h2>
-            </div>
-            <div class="modal-body">
-                <h3>My Career Goals</h3>
-                <p>Help our AI find the best jobs for you. What is your primary career goal right now?</p>
-                <form id="career-goals-form">
-                    <div class="form-group">
-                        <label for="career-goal">Describe your ideal next role or career path:</label>
-                        <textarea id="career-goal" placeholder="e.g., 'I'm a junior developer looking to move into a mid-level role focused on backend systems with Python and AWS.'"></textarea>
-                    </div>
-                    <button type="submit" class="search-button" style="width: 100%;">Save Goals</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="close-button">Close</button>
+        <!-- Dashboard Modal -->
+        <div class="modal-overlay" id="dashboard-modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header"><h2>My Dashboard</h2></div>
+                <div class="modal-body">
+                     <h3>My Career Goals</h3>
+                    <p>Help our AI find the best jobs for you. What is your primary career goal right now?</p>
+                    <form id="career-goals-form">
+                        <div class="form-group">
+                            <label for="career-goal">Describe your ideal next role or career path:</label>
+                            <textarea id="career-goal" placeholder="e.g., 'I'm a junior developer looking to move into a mid-level role focused on backend systems with Python and AWS.'"></textarea>
+                        </div>
+                        <button type="submit" class="search-button" style="width: 100%;">Save Goals</button>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="close-button">Close</button></div>
             </div>
         </div>
     </div>
@@ -622,386 +410,469 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        // --- START OF FIREBASE SETUP ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyDjn8WgssBtikX6QKxHXnDsheeSz8cvw3k",
-          authDomain: "job-bazar-app.firebaseapp.com",
-          projectId: "job-bazar-app",
-          storageBucket: "job-bazar-app.firebasestorage.app",
-          messagingSenderId: "1092941552619",
-          appId: "1:1092941552619:web:1c93949ed0acdada6a17ae"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        // --- END OF FIREBASE SETUP ---
-
-        // --- START OF GEMINI API SETUP ---
-        const GEMINI_API_KEY = "AIzaSyDc1-R-6XAGEpyQJFOvDKrPVfxHMlHD6ms"; // PASTE YOUR GEMINI API KEY HERE
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
-        // --- END OF GEMINI API SETUP ---
-
-        const jobsContainer = document.getElementById('job-listings');
-        const searchBar = document.getElementById('search-bar');
-        const jobCountElement = document.getElementById('job-count');
-        const detailPane = document.getElementById('job-detail-pane');
-        const authModal = document.getElementById('auth-modal');
-        const authContainer = document.getElementById('auth-container');
-        const tabsContainer = document.getElementById('tabs-container');
-        const interviewModal = document.getElementById('ai-interview-modal');
-        const interviewQuestionsOutput = document.getElementById('interview-questions-output');
-        const dashboardModal = document.getElementById('dashboard-modal');
-        
-        let allJobs = [];
-        let currentUser = null;
-        let userData = { savedJobs: [], careerGoal: '' };
-        let currentView = 'all'; // 'all', 'saved', 'recommended'
-        let currentSelectedJobId = null;
-
-        // --- AUTHENTICATION ---
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                currentUser = user;
-                await fetchUserData(user.uid);
-                authContainer.innerHTML = `<div id="user-info"><span>${user.email}</span><button id="dashboard-btn">My Dashboard</button><button id="sign-out-btn">Sign Out</button></div>`;
-                document.getElementById('sign-out-btn').addEventListener('click', () => auth.signOut());
-                document.getElementById('dashboard-btn').addEventListener('click', openDashboardModal);
-            } else {
-                currentUser = null;
-                userData = { savedJobs: [], careerGoal: '' };
-                authContainer.innerHTML = `<button id="signin-btn">Sign In</button><button id="signup-btn" class="primary">Sign Up</button>`;
-                document.getElementById('signin-btn').addEventListener('click', () => openAuthModal(false));
-                document.getElementById('signup-btn').addEventListener('click', () => openAuthModal(true));
-            }
-            renderTabs();
-            filterAndDisplayJobs();
-        });
-
-        async function fetchUserData(uid) {
-            const userDoc = await db.collection('users').doc(uid).get();
-            if (userDoc.exists) {
-                userData = userDoc.data();
-            } else {
-                const newUser = { savedJobs: [], careerGoal: '' };
-                await db.collection('users').doc(uid).set(newUser);
-                userData = newUser;
-            }
+    // --- START OF TRANSLATIONS ---
+    const translations = {
+        en: {
+            logoText: "Job Bazar",
+            navJobs: "Find a Job",
+            navFreelance: "Freelance Work",
+            navServices: "Tradespeople",
+            navResumeRater: "AI Resume Rater",
+            heroTitle: "Craft Your Career",
+            heroSubtitle: "A thoughtfully curated space for professionals seeking meaningful work.",
+            searchPlaceholder: "Job Title, Skill, or Company",
+            findJobsBtn: "Find Jobs",
+            signIn: "Sign In",
+            signUp: "Sign Up",
+            signOut: "Sign Out",
+            myDashboard: "My Dashboard"
+        },
+        hi: {
+            logoText: "जॉब बाज़ार",
+            navJobs: "नौकरी ढूंढें",
+            navFreelance: "फ्रीलांस कार्य",
+            navServices: "ट्रेड्स पीपल",
+            navResumeRater: "AI रिज्यूमे रेटर",
+            heroTitle: "अपना करियर बनाएं",
+            heroSubtitle: "सार्थक काम की तलाश कर रहे पेशेवरों के लिए एक विचारशील स्थान।",
+            searchPlaceholder: "नौकरी का शीर्षक, कौशल, या कंपनी",
+            findJobsBtn: "नौकरियां ढूंढें",
+            signIn: "साइन इन करें",
+            signUp: "साइन अप करें",
+            signOut: "साइन आउट करें",
+            myDashboard: "मेरा डैशबोर्ड"
+        },
+        bn: {
+            logoText: "জব বাজার",
+            navJobs: "চাকরি খুঁজুন",
+            navFreelance: "ফ্রিল্যান্স কাজ",
+            navServices: "ট্রেডسپিপল",
+            navResumeRater: "AI জীবনবৃত্তান্ত পরীক্ষক",
+            heroTitle: "আপনার ক্যারিয়ার তৈরি করুন",
+            heroSubtitle: "সার্থক কাজের সন্ধানে থাকা পেশাদারদের জন্য একটি চিন্তাশীলভাবে সজ্জিত স্থান।",
+            searchPlaceholder: "কাজের শিরোনাম, দক্ষতা, বা সংস্থা",
+            findJobsBtn: "চাকরি খুঁজুন",
+            signIn: "সাইন ইন করুন",
+            signUp: "সাইন আপ করুন",
+            signOut: "সাইন আউট করুন",
+            myDashboard: "আমার ড্যাশবোর্ড"
         }
+    };
+    // --- END OF TRANSLATIONS ---
 
-        function openAuthModal(isSignUp = false) {
-            document.getElementById('auth-modal-title').textContent = isSignUp ? 'Sign Up' : 'Sign In';
-            document.getElementById('email-form-button').textContent = isSignUp ? 'Sign Up' : 'Sign In';
-            document.getElementById('auth-error').textContent = '';
-            authModal.classList.add('visible');
-        }
+    // --- START OF FIREBASE SETUP ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjn8WgssBtikX6QKxHXnDsheeSz8cvw3k",
+      authDomain: "job-bazar-app.firebaseapp.com",
+      projectId: "job-bazar-app",
+      storageBucket: "job-bazar-app.firebasestorage.app",
+      messagingSenderId: "1092941552619",
+      appId: "1:1092941552619:web:1c93949ed0acdada6a17ae"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    // --- END OF FIREBASE SETUP ---
 
-        document.getElementById('email-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const isSignUp = document.getElementById('email-form-button').textContent === 'Sign Up';
+    // --- START OF GEMINI API SETUP ---
+    const GEMINI_API_KEY = ""; // PASTE YOUR GEMINI API KEY HERE
+    // --- END OF GEMINI API SETUP ---
 
-            const action = isSignUp 
-                ? auth.createUserWithEmailAndPassword(email, password)
-                : auth.signInWithEmailAndPassword(email, password);
-            
-            action.then(() => authModal.classList.remove('visible'))
-                  .catch(err => document.getElementById('auth-error').textContent = err.message);
-        });
+    // Global State
+    let state = {
+        allJobs: [],
+        allFreelance: [],
+        allServices: [],
+        currentUser: null,
+        userData: { savedJobs: [], careerGoal: '' },
+        currentView: 'jobs',
+        currentLang: 'en'
+    };
+    
+    // DOM References
+    const appRoot = document.getElementById('app-root');
+    const mainNav = document.getElementById('main-nav');
+    const authContainer = document.getElementById('auth-container');
+    const modalContainer = document.getElementById('modal-container');
+    const languageSelector = document.getElementById('language-selector');
 
-        document.getElementById('google-signin-btn').addEventListener('click', () => {
-            auth.signInWithPopup(googleProvider)
-                .then(() => authModal.classList.remove('visible'))
-                .catch(err => document.getElementById('auth-error').textContent = err.message);
-        });
-        
-        function openDashboardModal() {
-            document.getElementById('career-goal').value = userData.careerGoal || '';
-            dashboardModal.classList.add('visible');
-        }
-        
-        document.getElementById('career-goals-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newGoal = document.getElementById('career-goal').value;
-            if (currentUser) {
-                await db.collection('users').doc(currentUser.uid).update({ careerGoal: newGoal });
-                userData.careerGoal = newGoal;
-                alert('Career goals saved!');
-                dashboardModal.classList.remove('visible');
-                renderTabs(); // Re-render tabs in case recommendations are now available
+    // --- LANGUAGE & TRANSLATION ---
+    function setLanguage(lang) {
+        state.currentLang = lang;
+        document.documentElement.lang = lang;
+        updateUIText();
+    }
+
+    function updateUIText() {
+        const langData = translations[state.currentLang];
+        document.querySelectorAll('[data-lang-key]').forEach(el => {
+            const key = el.dataset.langKey;
+            if (langData[key]) {
+                el.textContent = langData[key];
             }
         });
-
-        // --- JOB DISPLAY & FILTERING ---
-        function displayJobs(jobs) {
-            jobsContainer.innerHTML = '';
-            jobCountElement.textContent = `${jobs.length} jobs found`;
-
-            if (jobs.length === 0) {
-                jobsContainer.innerHTML = '<p class="message">No jobs found.</p>';
-                return;
+        document.querySelectorAll('[data-lang-key-placeholder]').forEach(el => {
+            const key = el.dataset.langKeyPlaceholder;
+            if(langData[key]) {
+                el.placeholder = langData[key];
             }
+        });
+        renderAuthUI();
+    }
+    
+    // --- ROUTING / VIEW MANAGEMENT ---
+    function navigate(view) {
+        state.currentView = view;
+        renderApp();
+    }
 
-            jobs.forEach(jobData => {
-                const jobCard = document.createElement('div');
-                jobCard.className = 'job-card';
-                jobCard.dataset.jobId = jobData.id;
+    function renderApp() {
+        updateNavLinks();
+        appRoot.innerHTML = ''; // Clear previous view
+        appRoot.classList.add('fade-in');
 
-                const { 
-                    'Job Title': jobTitle = 'N/A', 'Company': company = 'N/A', 
-                    'Location': location = 'Remote', 'Salary': salary = 'N/A'
-                } = jobData;
-                const companyInitial = company.charAt(0).toUpperCase();
-                const isSaved = userData.savedJobs.includes(jobData.id);
+        switch(state.currentView) {
+            case 'jobs':
+                appRoot.innerHTML = getPortalHTML('jobs');
+                initializePortal('jobs', state.allJobs, renderJobCard, renderJobDetails);
+                break;
+            case 'freelance':
+                appRoot.innerHTML = getPortalHTML('freelance');
+                initializePortal('freelance', state.allFreelance, renderFreelanceCard, renderFreelanceDetails);
+                break;
+            case 'services':
+                 appRoot.innerHTML = getPortalHTML('services');
+                initializePortal('services', state.allServices, renderServiceCard, renderServiceDetails);
+                break;
+            case 'resumeRater':
+                appRoot.innerHTML = getResumeRaterHTML();
+                document.getElementById('resume-upload-label').addEventListener('click', () => document.getElementById('resume-file-input').click());
+                document.getElementById('resume-file-input').addEventListener('change', handleFileSelect);
+                document.getElementById('analyze-resume-btn').addEventListener('click', analyzeResume);
+                break;
+        }
+        
+        setTimeout(() => appRoot.classList.add('visible'), 50);
+        updateUIText();
+    }
+    
+    function updateNavLinks() {
+        mainNav.innerHTML = `
+            <a href="#" class="nav-link ${state.currentView === 'jobs' ? 'active' : ''}" data-view="jobs" data-lang-key="navJobs">Find a Job</a>
+            <a href="#" class="nav-link ${state.currentView === 'freelance' ? 'active' : ''}" data-view="freelance" data-lang-key="navFreelance">Freelance Work</a>
+            <a href="#" class="nav-link ${state.currentView === 'services' ? 'active' : ''}" data-view="services" data-lang-key="navServices">Tradespeople</a>
+            <a href="#" class="nav-link ${state.currentView === 'resumeRater' ? 'active' : ''}" data-view="resumeRater" data-lang-key="navResumeRater">AI Resume Rater</a>
+        `;
+    }
 
-                jobCard.innerHTML = `
-                    <button class="bookmark-btn ${isSaved ? 'saved' : ''}" title="Bookmark Job">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                    </button>
-                    <div class="card-top">
-                        <div class="company-logo">${companyInitial}</div>
-                        <div class="card-info">
-                            <h2>${jobTitle}</h2>
-                            <p class="company">${company}</p>
+    // --- HTML TEMPLATES ---
+    function getPortalHTML(portalType) {
+        return `
+            <section class="hero">
+                <div class="hero-bg"></div>
+                <h1 data-lang-key="heroTitle">Craft Your Career</h1>
+                <p data-lang-key="heroSubtitle">A thoughtfully curated space for professionals seeking meaningful work.</p>
+                <div class="search-wrapper">
+                    <input type="text" id="search-bar" data-lang-key-placeholder="searchPlaceholder" placeholder="Job Title, Skill, or Company">
+                    <button class="search-button" data-lang-key="findJobsBtn">Find Jobs</button>
+                </div>
+            </section>
+            <div class="main-content">
+                <div class="main-layout">
+                    <div class="results-column">
+                        <div id="job-listings"></div>
+                    </div>
+                    <div class="detail-pane">
+                         <div class="detail-placeholder">
+                            <h3>Select an item to view details</h3>
                         </div>
                     </div>
-                    <div class="card-details">
-                        <span class="detail-tag">📍 ${location}</span>
-                        <span class="detail-tag">💰 ${salary}</span>
-                    </div>
-                `;
-                
-                jobCard.addEventListener('click', () => showJobDetails(jobData));
-                jobCard.querySelector('.bookmark-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleBookmark(jobData.id);
-                });
-                jobsContainer.appendChild(jobCard);
-            });
-        }
-
-        function showJobDetails(jobData) {
-            if (currentSelectedJobId) {
-                document.querySelector(`[data-job-id="${currentSelectedJobId}"]`)?.classList.remove('selected');
-            }
-            document.querySelector(`[data-job-id="${jobData.id}"]`)?.classList.add('selected');
-            currentSelectedJobId = jobData.id;
-
-            const {
-                'Job Title': jobTitle = 'N/A', 'Company': company = 'N/A', 'Location': location = 'Remote',
-                'Description': description = 'No description provided.', 'Apply Link': applyLink = '#',
-                'Salary': salary = 'Not disclosed', 'Job Type': jobType = 'Full-time',
-                'Experience Level': experience = 'Not specified'
-            } = jobData;
-
-            detailPane.innerHTML = `
-                <div class="detail-header">
-                    <h2>${jobTitle}</h2>
-                    <p>${company} - ${location}</p>
                 </div>
-                <div class="detail-body">
-                    <a href="${applyLink}" target="_blank" class="search-button apply-button" style="display:block; text-align:center; text-decoration:none; margin-bottom: 24px;">Apply Now</a>
-                    <h3>Job Description</h3>
-                    <button class="summarize-button" id="summarize-btn">✨ Summarize with AI</button>
-                    <div id="ai-summary-output"></div>
-                    <p id="full-description">${description.replace(/\n/g, '<br>')}</p>
-                    <div class="decorative-divider"></div>
-                    <h3>Job Overview</h3>
-                    <div class="summary-item"><strong>Salary</strong><span>${salary}</span></div>
-                    <div class="summary-item"><strong>Job Type</strong><span>${jobType}</span></div>
-                    <div class="summary-item"><strong>Experience Level</strong><span>${experience}</span></div>
-                    <button class="ai-feature-button" id="ai-interview-prep-btn">✨ AI Interview Prep</button>
-                    <button class="ai-feature-button" disabled title="Coming Soon!">AI Match Score</button>
-                </div>
-            `;
-            
-            detailPane.querySelector('.apply-button').addEventListener('click', () => alert('Application Tracked!'));
-            detailPane.querySelector('#summarize-btn').addEventListener('click', () => generateSummary(description));
-            detailPane.querySelector('#ai-interview-prep-btn').addEventListener('click', () => generateInterviewQuestions(jobTitle, description));
-        }
+            </div>`;
+    }
 
-        async function toggleBookmark(jobId) {
-            if (!currentUser) {
-                alert('Please sign in to save jobs.');
+    function getResumeRaterHTML() {
+        return `
+            <section class="hero">
+                <div class="hero-bg"></div>
+                <h1>AI Resume Rater</h1>
+                <p>Get instant feedback from our AI career coach to improve your resume.</p>
+            </section>
+            <div id="resume-rater-portal" class="main-content">
+                 <input type="file" id="resume-file-input" accept=".txt,.md,.pdf">
+                 <label for="resume-file-input" id="resume-upload-label">Upload Resume</label>
+                 <p id="file-name"></p>
+                <button id="analyze-resume-btn" class="search-button">Analyze My Resume</button>
+                <div id="resume-results" class="hidden">
+                    <!-- AI analysis will appear here -->
+                </div>
+            </div>`;
+    }
+    
+    // --- INITIALIZATION ---
+    function initializePortal(portalType, data, cardRenderer, detailRenderer) {
+        const listingsContainer = document.getElementById('job-listings');
+        const detailPane = document.querySelector('.detail-pane');
+        
+        function displayItems(items) {
+            listingsContainer.innerHTML = '';
+            if (items.length === 0) {
+                listingsContainer.innerHTML = '<p>No listings found.</p>';
                 return;
             }
-            const userRef = db.collection('users').doc(currentUser.uid);
-            const isCurrentlySaved = userData.savedJobs.includes(jobId);
-            const updatedSavedJobs = isCurrentlySaved
-                ? userData.savedJobs.filter(id => id !== jobId)
-                : [...userData.savedJobs, jobId];
-            
-            await userRef.update({ savedJobs: updatedSavedJobs });
-            userData.savedJobs = updatedSavedJobs;
-            filterAndDisplayJobs();
-            renderTabs();
-        }
-        
-        function filterAndDisplayJobs() {
-            const searchTerm = searchBar.value.toLowerCase();
-            let jobsToDisplay = allJobs.filter(job => {
-                const title = (job['Job Title'] || '').toLowerCase();
-                const company = (job['Company'] || '').toLowerCase();
-                return title.includes(searchTerm) || company.includes(searchTerm);
+            items.forEach(item => {
+                const card = cardRenderer(item);
+                card.addEventListener('click', () => {
+                     if (window.innerWidth <= 900) {
+                        // Mobile modal logic would go here
+                    } else {
+                        document.querySelectorAll('.job-card.selected').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        detailPane.innerHTML = detailRenderer(item);
+                    }
+                });
+                listingsContainer.appendChild(card);
             });
-
-            if (currentView === 'saved') {
-                jobsToDisplay = jobsToDisplay.filter(job => userData.savedJobs.includes(job.id));
-            }
-            
-            displayJobs(jobsToDisplay);
         }
+        displayItems(data);
+    }
+    
+    // Card Renderers
+    function renderJobCard(job) {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.innerHTML = `
+            <div class="card-top">
+                <div class="company-logo">${job.Company.charAt(0)}</div>
+                <div class="card-info">
+                    <h2>${job['Job Title']}</h2>
+                    <p class="company">${job.Company}</p>
+                </div>
+            </div>
+            <div class="card-details">
+                <span class="detail-tag">📍 ${job.Location}</span>
+                <span class="detail-tag">💰 ${job.Salary}</span>
+            </div>`;
+        return card;
+    }
 
-        // --- TABS & AI RECOMMENDATIONS ---
-        function renderTabs() {
-            tabsContainer.innerHTML = '';
-            const allTab = document.createElement('div');
-            allTab.className = 'tab active';
-            allTab.textContent = 'All Jobs';
-            allTab.dataset.view = 'all';
-            tabsContainer.appendChild(allTab);
+    function renderFreelanceCard(gig) {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.innerHTML = `
+            <div class="card-top">
+                <div class="company-logo">${gig.Client.charAt(0)}</div>
+                <div class="card-info">
+                    <h2>${gig.ProjectTitle}</h2>
+                    <p class="company">${gig.Client}</p>
+                </div>
+            </div>
+            <div class="card-details">
+                <span class="detail-tag">💰 ${gig.Budget}</span>
+                <span class="detail-tag">⏳ ${gig.ProjectLength}</span>
+            </div>`;
+        return card;
+    }
 
-            if (currentUser) {
-                const savedTab = document.createElement('div');
-                savedTab.className = 'tab';
-                savedTab.textContent = 'Saved Jobs';
-                savedTab.dataset.view = 'saved';
-                tabsContainer.appendChild(savedTab);
-
-                if (userData.careerGoal) {
-                    const recommendedTab = document.createElement('div');
-                    recommendedTab.className = 'tab';
-                    recommendedTab.textContent = '✨ Recommended for You';
-                    recommendedTab.dataset.view = 'recommended';
-                    tabsContainer.appendChild(recommendedTab);
-                }
-            }
+    function renderServiceCard(pro) {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.innerHTML = `
+             <div class="card-top">
+                <div class="company-logo">${pro.Name.charAt(0)}</div>
+                <div class="card-info">
+                    <h2>${pro.Name}</h2>
+                    <p class="company">${pro.ServiceType}</p>
+                </div>
+            </div>
+            <div class="card-details">
+                <span class="detail-tag">📍 ${pro.Location}</span>
+                <span class="detail-tag">⭐ ${pro.Rating} Stars</span>
+            </div>`;
+        return card;
+    }
+    
+    // Detail Renderers
+    function renderJobDetails(job) {
+        return `
+            <div class="detail-header"><h2>${job['Job Title']}</h2></div>
+            <div class="detail-body"><p>${job.Description.replace(/\n/g, '<br>')}</p></div>`;
+    }
+     function renderFreelanceDetails(gig) {
+        return `
+            <div class="detail-header"><h2>${gig.ProjectTitle}</h2></div>
+            <div class="detail-body"><p>${gig.Description.replace(/\n/g, '<br>')}</p></div>`;
+    }
+     function renderServiceDetails(pro) {
+        return `
+            <div class="detail-header"><h2>${pro.Name}</h2></div>
+            <div class="detail-body"><p>${pro.ServicesOffered.replace(/\n/g, '<br>')}</p></div>`;
+    }
+    
+    // --- AUTH UI ---
+    function renderAuthUI() {
+        const lang = translations[state.currentLang];
+        if (state.currentUser) {
+            authContainer.innerHTML = `
+                <div class="user-info">
+                    <span>${state.currentUser.email}</span>
+                    <button id="dashboard-btn">${lang.myDashboard}</button>
+                    <button id="sign-out-btn">${lang.signOut}</button>
+                </div>`;
+            document.getElementById('sign-out-btn').addEventListener('click', () => auth.signOut());
+            document.getElementById('dashboard-btn').addEventListener('click', () => document.getElementById('dashboard-modal').classList.add('visible'));
+        } else {
+            authContainer.innerHTML = `
+                <button id="signin-btn">${lang.signIn}</button>
+                <button id="signup-btn" class="primary">${lang.signUp}</button>`;
+            document.getElementById('signin-btn').addEventListener('click', () => openAuthModal(false));
+            document.getElementById('signup-btn').addEventListener('click', () => openAuthModal(true));
         }
+    }
+    
+     function openAuthModal(isSignUp = false) {
+        const title = isSignUp ? 'Sign Up' : 'Sign In';
+        document.getElementById('auth-modal-title').textContent = title;
+        document.getElementById('email-form-button').textContent = title;
+        document.getElementById('auth-modal').classList.add('visible');
+    }
 
-        tabsContainer.addEventListener('click', async (e) => {
-            if (e.target.classList.contains('tab')) {
-                document.querySelector('.tab.active')?.classList.remove('active');
-                e.target.classList.add('active');
-                currentView = e.target.dataset.view;
+    // --- DATA FETCHING ---
+    async function loadAllData() {
+        const jobsSnapshot = await db.collection('jobs').get();
+        state.allJobs = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                if (currentView === 'recommended') {
-                    await getAIRecommendations();
-                } else {
-                    filterAndDisplayJobs();
-                }
-            }
-        });
+        const freelanceSnapshot = await db.collection('freelance_projects').get();
+        state.allFreelance = freelanceSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        async function callGeminiAPI(prompt) {
-            if (!GEMINI_API_KEY) {
-                return { error: "To use AI features, please add your Gemini API key." };
-            }
-            try {
-                const response = await fetch(GEMINI_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
-                const data = await response.json();
-                return { text: data.candidates[0].content.parts[0].text };
-            } catch (error) {
-                console.error('Gemini API Error:', error);
-                return { error: "Sorry, the AI feature is currently unavailable." };
-            }
-        }
-
-        async function generateSummary(description) {
-            const summaryOutput = document.getElementById('ai-summary-output');
-            if (!summaryOutput) return;
-            
-            summaryOutput.innerHTML = `<p><em>Generating summary...</em></p>`;
-            const prompt = `Summarize the following job description into three key bullet points covering the main responsibilities and requirements:\n\n${description}`;
-            const result = await callGeminiAPI(prompt);
-
-            if (result.error) {
-                summaryOutput.innerHTML = `<p style="color: red;">${result.error}</p>`;
-            } else {
-                const formattedSummary = result.text.split('* ').map(item => item.trim()).filter(Boolean).map(item => `<li>${item}</li>`).join('');
-                summaryOutput.innerHTML = `<div class="ai-summary-section"><ul>${formattedSummary}</ul></div>`;
-            }
-        }
+        const servicesSnapshot = await db.collection('local_services').get();
+        state.allServices = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        async function generateInterviewQuestions(jobTitle, description) {
-            interviewModal.classList.add('visible');
-            interviewQuestionsOutput.innerHTML = `<p><em>Generating interview questions for a ${jobTitle} role...</em></p>`;
-            const prompt = `Based on the following job title and description, generate 5 common and insightful interview questions. Format the response as a numbered list.\n\nJob Title: ${jobTitle}\n\nDescription: ${description}`;
-            const result = await callGeminiAPI(prompt);
+        renderApp();
+    }
+    
+    // --- AI FEATURES ---
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            document.getElementById('file-name').textContent = `Selected: ${file.name}`;
+        }
+    }
 
-            if (result.error) {
-                interviewQuestionsOutput.innerHTML = `<p style="color: red;">${result.error}</p>`;
+    async function analyzeResume() {
+        const fileInput = document.getElementById('resume-file-input');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('Please upload a resume file.');
+            return;
+        }
+
+        const resultsContainer = document.getElementById('resume-results');
+        resultsContainer.innerHTML = `<p><em>Reading file and analyzing with AI...</em></p>`;
+        resultsContainer.classList.remove('hidden');
+
+        let resumeText = '';
+        try {
+            if (file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = async function() {
+                    const typedarray = new Uint8Array(this.result);
+                    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    let text = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        text += content.items.map(item => item.str).join(' ');
+                    }
+                    resumeText = text;
+                    callResumeAnalysisAPI(resumeText);
+                };
+                reader.readAsArrayBuffer(file);
             } else {
-                const formattedQuestions = result.text.split(/\d+\.\s/).map(item => item.trim()).filter(Boolean).map(item => `<li>${item}</li>`).join('');
-                interviewQuestionsOutput.innerHTML = `<h3>Common Questions</h3><ul>${formattedQuestions}</ul>`;
+                resumeText = await file.text();
+                callResumeAnalysisAPI(resumeText);
             }
+        } catch (error) {
+             console.error("File Reading Error:", error);
+            resultsContainer.innerHTML = `<p style="color:red;">Could not read the uploaded file.</p>`;
+        }
+    }
+
+    async function callResumeAnalysisAPI(resumeText) {
+        const resultsContainer = document.getElementById('resume-results');
+        if (!GEMINI_API_KEY) {
+             resultsContainer.innerHTML = `<p style="color:red;">Please configure your Gemini API Key to use this feature.</p>`;
+             return;
         }
 
-        async function getAIRecommendations() {
-            jobsContainer.innerHTML = '<p class="message">✨ Asking our AI for recommendations...</p>';
-            
-            const availableJobsJSON = JSON.stringify(allJobs);
-            
-            const prompt = `Act as an expert career advisor. A user has specified their career goal: "${userData.careerGoal}". Based on this goal, analyze the following complete list of available jobs and identify the top 5 most relevant recommendations. Return ONLY a JSON array of the full job objects for the recommended jobs. Do not include any other text or explanation.\n\nAVAILABLE JOBS:\n${availableJobsJSON}`;
-
-            try {
-                const response = await fetch(GEMINI_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                });
-                if (!response.ok) throw new Error('AI API request failed');
-                
-                const data = await response.json();
-                const recommendedJobs = JSON.parse(data.candidates[0].content.parts[0].text);
-                displayJobs(recommendedJobs);
-
-            } catch (error) {
-                console.error("AI Recommendation Error:", error);
-                jobsContainer.innerHTML = '<p class="message">Sorry, we could not generate recommendations at this time.</p>';
-            }
-        }
-
-        // --- INITIAL LOAD ---
-        async function loadJobs() {
-            try {
-                db.collection('jobs').onSnapshot(snapshot => {
-                    allJobs = snapshot.empty ? [] : snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    filterAndDisplayJobs();
-                }, error => {
-                     console.error("Error fetching jobs from Firestore: ", error);
-                     jobsContainer.innerHTML = `<p class="message"><strong>Error connecting to the database.</strong></p>`;
-                     jobCountElement.textContent = 'Could not load data';
-                });
-            } catch (error) {
-                jobsContainer.innerHTML = `<p class="message"><strong>Failed to initialize database connection.</strong></p>`;
-                jobCountElement.textContent = 'Could not load data';
-                console.error('Firestore Initialization Error:', error);
-            }
-        }
+        const prompt = `Act as an expert career coach. Analyze the following resume text. Provide a rating out of 100. Then, provide a concise summary with three sections: 'Strengths', 'Areas for Improvement', and 'Actionable Tips'. The response must be in a clean JSON format with keys: "score", "strengths", "improvements", "tips". The value for strengths, improvements and tips should be an array of strings.\n\nResume Text: ${resumeText}`;
         
-        searchBar.addEventListener('keyup', filterAndDisplayJobs);
-        document.querySelector('.search-button').addEventListener('click', filterAndDisplayJobs);
-
-        [authModal, interviewModal, dashboardModal].forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal || e.target.classList.contains('close-button')) {
-                    modal.classList.remove('visible');
-                }
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { responseMimeType: "application/json" }
+                })
             });
-        });
+            if (!response.ok) throw new Error('AI API request failed');
+            
+            const data = await response.json();
+            const analysis = JSON.parse(data.candidates[0].content.parts[0].text);
 
-        document.addEventListener('DOMContentLoaded', loadJobs);
+            resultsContainer.innerHTML = `
+                <h2>Analysis Complete! Score: ${analysis.score}/100</h2>
+                <h3>Strengths</h3>
+                <ul>${analysis.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+                <h3>Areas for Improvement</h3>
+                <ul>${analysis.improvements.map(i => `<li>${i}</li>`).join('')}</ul>
+                <h3>Actionable Tips</h3>
+                <ul>${analysis.tips.map(t => `<li>${t}</li>`).join('')}</ul>
+            `;
+            resultsContainer.classList.add('visible');
+        } catch (error) {
+            console.error("Resume Analysis Error:", error);
+            resultsContainer.innerHTML = `<p style="color:red;">Sorry, an error occurred during analysis.</p>`;
+             resultsContainer.classList.add('visible');
+        }
+    }
+
+
+    // --- EVENT LISTENERS ---
+    mainNav.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = e.target.dataset.view;
+        if (view) {
+            navigate(view);
+        }
+    });
+    
+    languageSelector.addEventListener('change', (e) => {
+        setLanguage(e.target.value);
+    });
+
+    auth.onAuthStateChanged(user => {
+        state.currentUser = user;
+        renderAuthUI();
+        if (user) {
+            // fetch user-specific data
+        }
+    });
+    
+    modalContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-button')) {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('visible'));
+        }
+    });
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadAllData();
+        setLanguage('en');
+    });
+
     </script>
-
 </body>
 </html>
-
